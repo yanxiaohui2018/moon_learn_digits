@@ -17,7 +17,8 @@ import pandas as pd
 import csv
 import xlrd
 import pygame
-
+from evdev import InputDevice
+from select import select
 
 def playmp3(file):
     track = pygame.mixer.music.load(file)
@@ -67,6 +68,25 @@ def playdigit9():
     playmp3("9.mp3")
 
 
+scankey = 0
+
+
+def scankeythread(threadname, delay):
+    # always scanning digit keys
+    global scankey
+    dev = InputDevice('/dev/input/event4')
+    while True:
+        select([dev], [], [])
+        for event in dev.read():
+            if (event.value == 1 or event.value == 0) and event.code != 0:
+                print("Key: %s Status: %s" % (event.code, "pressed" if event.value else "release"))
+                if (event.code == 11):
+                    scankey = 0
+                else:
+                    scankey = event.code-1
+                print(scankey)
+
+
 pygame.init()
 
 root = Tk()
@@ -74,12 +94,14 @@ root.title("慕恩学数字 V1.0")
 # root.geometry("400x300+0+0")
 root.resizable(0, 0)
 
-#logo = PhotoImage(file="moon.gif")
-#Label(root, image=logo).pack()
+logo = PhotoImage(file="moon.gif")
+Label(root, image=logo).pack()
 Label(root,
       text="by 爸爸（颜晓辉） @哈曼国际",
       fg="light green",
       bg="dark green").pack(fill=X)
+
+_thread.start_new_thread(scankeythread, ("", 0))
 
 # draw digits: 0~9
 digitframe = LabelFrame(root, text="数字", bg="light blue")
