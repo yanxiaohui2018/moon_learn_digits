@@ -68,23 +68,36 @@ def playdigit9():
     playmp3("9.mp3")
 
 
+def playvoice(digit):
+    mp3name = str(digit) + '.mp3'
+    playmp3(mp3name)
+
+
 scankey = 0
 
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
     global scankey
-    dev = InputDevice('/dev/input/event4')
+    key_code = (82, 79, 80, 81, 75, 76, 77, 71, 72, 73)
+    key_value = (0, 1,  2,  3,  4,  5,  6,  7,  8,  9)
+    key_dict = dict(list(zip(key_code, key_value)))
+    dev = InputDevice('/dev/input/event19') #event4
     while True:
         select([dev], [], [])
         for event in dev.read():
             if (event.value == 1 or event.value == 0) and event.code != 0:
                 print("Key: %s Status: %s" % (event.code, "pressed" if event.value else "release"))
-                if (event.code == 11):
-                    scankey = 0
-                else:
-                    scankey = event.code-1
-                print(scankey)
+                if (event.value == 1):
+                    if (event.code <= 11):
+                        if (event.code == 11):
+                            scankey = 0
+                        else:
+                            scankey = event.code-1
+                    else:
+                        scankey = key_dict[event.code]
+                    print(scankey)
+                    playvoice(scankey)
 
 
 pygame.init()
