@@ -23,7 +23,7 @@ from select import select
 def playmp3(file):
     track = pygame.mixer.music.load(file)
     pygame.mixer.music.play()
-    time.sleep(1)
+    time.sleep(0.7)
     pygame.mixer.music.stop()
     print(file)
 
