@@ -19,66 +19,95 @@ import xlrd
 import pygame
 from evdev import InputDevice
 from select import select
+import pyaudio
+import wave
 
-def playmp3(file):
-    track = pygame.mixer.music.load(file)
-    pygame.mixer.music.play()
-    time.sleep(0.7)
-    pygame.mixer.music.stop()
+
+def playwav(file):
     print(file)
+    # define stream chunk
+    chunk = 1024
+
+    # open a wav format music
+    f = wave.open(r"0.wav", "rb")
+    # instantiate PyAudio
+    p = pyaudio.PyAudio()
+    # open stream
+    stream = p.open(format=p.get_format_from_width(f.getsampwidth()),
+                    channels=f.getnchannels(),
+                    rate=f.getframerate(),
+                    output=True)
+    # read data
+    data = f.readframes(chunk)
+
+    # play stream
+    while data != '':
+        stream.write(data)
+        data = f.readframes(chunk)
+
+    # stop stream
+    stream.stop_stream()
+    stream.close()
+
+    # close PyAudio
+    p.terminate()
+
+
+def playfile(file):
+    print(file)
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play()
+    time.sleep(0.5)
+    pygame.mixer.music.stop()
 
 
 def playdigit0():
-    playmp3("0.mp3")
+    playfile("0.wav")
 
 
 def playdigit1():
-    playmp3("1.mp3")
+    playfile("1.wav")
 
 
 def playdigit2():
-    playmp3("2.mp3")
+    playfile("2.wav")
 
 
 def playdigit3():
-    playmp3("3.mp3")
+    playfile("3.wav")
 
 
 def playdigit4():
-    playmp3("4.mp3")
+    playfile("4.wav")
 
 
 def playdigit5():
-    playmp3("5.mp3")
+    playfile("5.wav")
 
 
 def playdigit6():
-    playmp3("6.mp3")
+    playfile("6.wav")
 
 
 def playdigit7():
-    playmp3("7.mp3")
+    playfile("7.wav")
 
 
 def playdigit8():
-    playmp3("8.mp3")
+    playfile("8.wav")
 
 
 def playdigit9():
-    playmp3("9.mp3")
+    playfile("9.wav")
 
 
 def playvoice(digit):
-    mp3name = str(digit) + '.mp3'
-    playmp3(mp3name)
-
-
-scankey = 0
+    filename = str(digit) + '.wav'  # '.mp3'
+    playfile(filename)
 
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
-    global scankey
     key_code = (82, 79, 80, 81, 75, 76, 77, 71, 72, 73)
     key_value = (0, 1,  2,  3,  4,  5,  6,  7,  8,  9)
     key_dict = dict(list(zip(key_code, key_value)))
