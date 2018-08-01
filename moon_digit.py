@@ -17,10 +17,12 @@ import pandas as pd
 import csv
 import xlrd
 import pygame
+import os
+import pexpect
 from evdev import InputDevice
 from select import select
-import pyaudio
-import wave
+#import pyaudio
+#import wave
 
 
 def playwav(file):
@@ -101,38 +103,57 @@ def playdigit9():
     playfile("9.wav")
 
 
-def playvoice(digit):
-    filename = str(digit) + '.wav'  # '.mp3'
+def playvoice(key):
+    # filter out undefined keys
+    if (key==0):
+        return
+
+    filename = key + '.wav'  # '.mp3'
     playfile(filename)
 
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
-    key_code = (82, 79, 80, 81, 75, 76, 77, 71, 72, 73)
-    key_value = (0, 1,  2,  3,  4,  5,  6,  7,  8,  9)
+    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106,69)
+    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you', 0)
     key_dict = dict(list(zip(key_code, key_value)))
-    dev = InputDevice('/dev/input/event19') #event4
+    dev = InputDevice('/dev/input/event9')  # --office keyboard # event19--home keyboard # event4--home keypad
     while True:
         select([dev], [], [])
         for event in dev.read():
             if (event.value == 1 or event.value == 0) and event.code != 0:
                 print("Key: %s Status: %s" % (event.code, "pressed" if event.value else "release"))
                 if (event.value == 1):
+                    '''
                     if (event.code <= 11):
                         if (event.code == 11):
                             scankey = 0
                         else:
                             scankey = event.code-1
                     else:
-                        scankey = key_dict[event.code]
+                    '''
+                    scankey = key_dict[event.code]
                     print(scankey)
                     playvoice(scankey)
 
 
 pygame.init()
+# initialize the mixer module
+pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+
+# os.system("sudo chmod 777 /dev/input/event19")
+
+# run: linux shell sudo
+'''
+shell_cmd = "sudo chmod 777 /dev/input/event19"
+child = pexpect.spawn(shell_cmd)
+index = child.expect(['password', pexpect.EOF, pexpect.TIMEOUT])
+if index == 0:
+    child.sendline("howareyou")
+'''
 
 root = Tk()
-root.title("慕恩学数字 V1.0")
+root.title("慕恩学键盘 V1.0")
 # root.geometry("400x300+0+0")
 root.resizable(0, 0)
 
