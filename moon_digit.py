@@ -103,7 +103,7 @@ def playdigit9():
     playfile("9.wav")
 
 
-def playvoice(key):
+def playchinesevoice(key):
     # filter out undefined keys
     if (key==0):
         return
@@ -114,8 +114,8 @@ def playvoice(key):
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
-    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106,69)
-    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you', 0)
+    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106,69,110,102,104,111,107,109,70,119)
+    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you', 0,  0,  0,  0,  0,  0,  0, 0,  0)
     key_dict = dict(list(zip(key_code, key_value)))
     dev = InputDevice('/dev/input/event9')  # --office keyboard # event19--home keyboard # event4--home keypad
     while True:
@@ -123,6 +123,10 @@ def scankeythread(threadname, delay):
         for event in dev.read():
             if (event.value == 1 or event.value == 0) and event.code != 0:
                 print("Key: %s Status: %s" % (event.code, "pressed" if event.value else "release"))
+                if (event.code == 59):  # F1: switch to English voice
+                    # playenglishvoice(scankey)
+                    break
+
                 if (event.value == 1):
                     '''
                     if (event.code <= 11):
@@ -134,7 +138,7 @@ def scankeythread(threadname, delay):
                     '''
                     scankey = key_dict[event.code]
                     print(scankey)
-                    playvoice(scankey)
+                    playchinesevoice(scankey)
 
 
 pygame.init()
