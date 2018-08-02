@@ -114,8 +114,8 @@ def playchinesevoice(key):
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
-    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106,69,110,102,104,111,107,109,70,119)
-    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you', 0,  0,  0,  0,  0,  0,  0, 0,  0)
+    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106)
+    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you')
     key_dict = dict(list(zip(key_code, key_value)))
     dev = InputDevice('/dev/input/event9')  # --office keyboard # event19--home keyboard # event4--home keypad
     while True:
@@ -136,7 +136,10 @@ def scankeythread(threadname, delay):
                             scankey = event.code-1
                     else:
                     '''
-                    scankey = key_dict[event.code]
+                    try:
+                        scankey = key_dict[event.code]
+                    except:
+                        scankey = 0
                     print(scankey)
                     playchinesevoice(scankey)
 
