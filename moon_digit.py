@@ -59,7 +59,7 @@ def playfile(file):
     print(file)
     pygame.mixer.music.load(file)
     pygame.mixer.music.play()
-    time.sleep(0.5)
+    time.sleep(0.6)
     pygame.mixer.music.stop()
 
 
@@ -114,8 +114,8 @@ def playchinesevoice(key):
 
 def scankeythread(threadname, delay):
     # always scanning digit keys
-    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106)
-    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you')
+    key_code =  (82, 79, 80, 81, 75, 76, 77, 71, 72, 73,   78,    74,      55,   98,    83,      96,    103,  108,  105,  106, 30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44, 11,  2,  3,  4,  5,  6,  7,  8,  9, 10,      57,      28,      14)
+    key_value = ('0','1','2','3','4','5','6','7','8','9','jia','jian','cheng','chu','dian','dengyu','shang','xia','zuo','you','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','kongge','huiche','shanchu')
     key_dict = dict(list(zip(key_code, key_value)))
     dev = InputDevice('/dev/input/event9')  # --office keyboard # event19--home keyboard # event4--home keypad
     while True:
